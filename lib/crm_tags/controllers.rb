@@ -6,6 +6,12 @@ class ControllerHooks < FatFreeCRM::Callback::Base
     define_method :"get_#{klass.to_s.tableize}" do |controller, context|
       params, query = controller.params, controller.send(:current_query)
 
+      #---
+      words, tags = parse_words_and_tags(query)
+      controller.logger.p "words: " + words.inspect
+      controller.logger.p "tags: " + tags.inspect
+      #---
+
       if query.blank?                                                   # No search query...
         if params[:tag].blank?                                          # No search query, no tags.
           klass.my(context[:records])
@@ -61,5 +67,21 @@ class ControllerHooks < FatFreeCRM::Callback::Base
       end.paginate(context[:pages])   
     end # define_method
   end # each
+
+  private
+  # Simplistic query parsing to prove the concept of combining query string
+  # with hash-prefixed tags. 
+  #----------------------------------------------------------------------------
+  def parse_words_and_tags(query)
+    words, tags = [], []
+    query.scan(/[\w#]+/).each do |token|
+      if token.starts_with?("#")
+        tags << token
+      else
+        words << token
+      end
+    end
+    [ words.join(" "), tags.join(" ") ]
+  end
 
 end
