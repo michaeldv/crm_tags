@@ -1,8 +1,9 @@
 module CrmTags
-  module Helpers
+  module ViewHelpers
 
+    # Generate tag links for use on asset index pages.
     #----------------------------------------------------------------------------
-    def tag_links(model)
+    def tags_for_index(model)
       model.tag_list.inject([]) do |arr, tag|
         query = controller.send(:current_query) || ""
         hashtag = "##{tag}"
@@ -15,7 +16,15 @@ module CrmTags
       end.join(" ")
     end
 
+    # Generate tag links for the asset landing page (shown on a sidebar).
+    #----------------------------------------------------------------------------
+    def tags_for_show(model)
+      model.tag_list.inject([]) do |arr, tag|
+        arr << link_to(tag, url_for(:action => "tagged", :id => tag), :title => tag)
+      end.join(" ")
+    end
+
   end
 end
 
-ActionView::Base.send(:include, CrmTags::Helpers)
+ActionView::Base.send(:include, CrmTags::ViewHelpers)

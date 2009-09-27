@@ -3,13 +3,17 @@ class ViewHooks < FatFreeCRM::Callback::Base
   TAGS_FIELD = <<EOS
 %tr
   %td{ :valign => :top, :colspan => span }
-    .label.req Tags: <small>(comma separated)</small>
+    .label.req Tags: <small>(comma separated, letters and digits only)</small>
     = f.text_field :tag_list, :style => "width:500px"
 EOS
 
-  TAGS_LINKS = <<EOS
+  TAGS_FOR_INDEX = <<EOS
 %dt{ :style => (model.is_a?(Contact) ? "padding: 2px 0px 0px 38px" : "") }
-  .tags= tag_links(model)
+  .tags= tags_for_index(model)
+EOS
+
+  TAGS_FOR_SHOW = <<EOS
+.tags(style="margin:4px 0px 4px 0px")= tags_for_show(model)
 EOS
 
   TAGS_STYLES = <<EOS
@@ -46,17 +50,24 @@ EOS
   end
 
   #----------------------------------------------------------------------------
-  %w(account campaign contact lead opportunity).each do |model|
+  [ :account, :campaign, :contact, :lead, :opportunity ].each do |model|
 
     define_method :"#{model}_top_section_bottom" do |view, context|
-      Haml::Engine.new(TAGS_FIELD).render(view, :f => context[:f], :span => (model != "campaign" ? 3 : 5))
+      Haml::Engine.new(TAGS_FIELD).render(view, :f => context[:f], :span => (model != :campaign ? 3 : 5))
     end
 
     define_method :"#{model}_bottom" do |view, context|
-      unless context[model.to_sym].tag_list.empty?
-        Haml::Engine.new(TAGS_LINKS).render(view, :model => context[model.to_sym])
+      unless context[model].tag_list.empty?
+        Haml::Engine.new(TAGS_FOR_INDEX).render(view, :model => context[model])
+      end
+    end
+
+    define_method :"show_#{model}_sidebar_bottom" do |view, context|
+      unless context[model].tag_list.empty?
+        Haml::Engine.new(TAGS_FOR_SHOW).render(view, :model => context[model])
       end
     end
 
   end
+
 end

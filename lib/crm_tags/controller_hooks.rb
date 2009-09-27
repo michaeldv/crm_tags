@@ -7,11 +7,6 @@ class ControllerHooks < FatFreeCRM::Callback::Base
       params, search_string = controller.params, controller.send(:current_query)
       query, tags = parse_query_and_tags(search_string)
 
-      #---
-      controller.logger.p "query: " + query.inspect
-      controller.logger.p "tags: " + tags.inspect
-      #---
-
       if query.blank?                                                   # No search query...
         if tags.blank?                                                  # No search query, no tags.
           klass.my(context[:records])
@@ -35,11 +30,6 @@ class ControllerHooks < FatFreeCRM::Callback::Base
       session, params, search_string = controller.session, controller.params, controller.send(:current_query)
       query, tags = parse_query_and_tags(search_string)
       filter = :"filter_by_#{klass.to_s.singularize}_status"
-
-      #---
-      controller.logger.p "query: " + query.inspect
-      controller.logger.p "tags: " + tags.inspect
-      #---
 
       if session[filter]                                                # With filters...
         filtered = session[filter].split(",")
