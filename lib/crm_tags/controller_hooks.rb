@@ -64,6 +64,18 @@ class ControllerHooks < FatFreeCRM::Callback::Base
     end # define_method
   end # each
 
+  # Auto complete hook that gets called from application_controller.rb.
+  #----------------------------------------------------------------------------
+  def auto_complete(controller, context = {})
+    query, tags = parse_query_and_tags(context[:query])
+    klass = controller.controller_name.classify.constantize
+    if tags.empty?
+      klass.my(:user => context[:user], :limit => 10).search(query)
+    else
+      klass.my(:user => context[:user], :limit => 10).search(query).tagged_with(tags, :on => :tags)
+    end
+  end
+
   private
   # Somewhat simplistic parser that extracts query and hash-prefixed tags from
   # the search string and returns them as two element array, for example:
