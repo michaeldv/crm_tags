@@ -5,7 +5,7 @@ FatFreeCRM::Plugin.register(:crm_sample_tabs, initializer) do
        authors "Michael Dvorkin, Jose Luis Gordo Romero"
        version "0.1"
    description "Adds tagging support to Fat Free CRM"
-  dependencies :"acts-as-taggable-on", :haml, :simple_column_search, :uses_user_permissions, :will_paginate
+  dependencies :"acts-as-taggable-on", :haml, :simple_column_search, :will_paginate
 end
 
 require "crm_tags"
