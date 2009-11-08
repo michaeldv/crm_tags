@@ -29,7 +29,7 @@ class ControllerHooks < FatFreeCRM::Callback::Base
     define_method :"get_#{klass.to_s.tableize}" do |controller, context|
       session, params, search_string = controller.session, controller.params, controller.send(:current_query)
       query, tags = parse_query_and_tags(search_string)
-      filter = :"filter_by_#{klass.to_s.singularize}_status"
+      filter = :"filter_by_#{klass.to_s.downcase.singularize}_status"
 
       if session[filter]                                                # With filters...
         filtered = session[filter].split(",")
