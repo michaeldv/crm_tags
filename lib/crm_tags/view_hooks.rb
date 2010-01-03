@@ -8,7 +8,7 @@ class ViewHooks < FatFreeCRM::Callback::Base
 EOS
 
   TAGS_FOR_INDEX = <<EOS
-%dt{ :style => (model.is_a?(Contact) ? "padding: 2px 0px 0px 38px" : "") }
+%dt
   .tags= tags_for_index(model)
 EOS
 
